@@ -2,14 +2,14 @@
   "name": "Tails & Trails",
   "short_name": "T&T",
   "description": "Находи компаньонов для прогулок с питомцами",
-  "start_url": "Tails-Trails/index.html",
+  "start_url": "index.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#4CAF50",
   "icons": [
     {
-      "src": "images/icons/paws3.png",
+      "src": "images/icons/paw3.png",
       "sizes": "550x550",
       "type": "image/png",
       "purpose": "any"
