@@ -4,8 +4,8 @@
   "description": "Находи компаньонов для прогулок с питомцами",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#ffffff",
-  "theme_color": "#4CAF50",
+  "background_color": "#000000",
+  "theme_color": "#629d63",
   "icons": [
     {
       "src": "images/icons/paw3.png",
