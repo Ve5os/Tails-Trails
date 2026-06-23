@@ -26,16 +26,18 @@
     <!-- Регистрация Service Worker (ОБЯЗАТЕЛЬНО!) -->
     <script>
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('Service Worker зарегистрирован');
-                    })
-                    .catch(err => {
-                        console.log('Ошибка регистрации Service Worker:', err);
-                    });
-            });
-        }
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/tails-trails/sw.js', {
+            scope: '/tails-trails/'  // ← Указываем scope для папки проекта
+        })
+        .then(registration => {
+            console.log('Service Worker зарегистрирован для scope:', registration.scope);
+        })
+        .catch(err => {
+            console.log('Ошибка регистрации Service Worker:', err);
+        });
+    });
+}
     </script>
 </body>
 </html>
