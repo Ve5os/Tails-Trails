@@ -10,9 +10,7 @@ const ASSETS = [
   '/js/map.js',
   '/js/profile.js',
   '/js/utils.js',
-  '/images/logo.svg',
-  '/libs/leaflet/leaflet.css',
-  '/libs/leaflet/leaflet.js'
+  '/images/logo.svg'
 ];
 
 // Установка Service Worker
