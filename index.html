@@ -27,7 +27,7 @@
     <script>
         if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/tails-trails/sw.js', {
+        navigator.serviceWorker.register('/Tails-Trails/sw.js', {
             scope: '/tails-trails/'  // ← Указываем scope для папки проекта
         })
         .then(registration => {
