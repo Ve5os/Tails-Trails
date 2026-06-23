@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- Стандартные мета-теги для PWA -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Tails & Trails">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#4CAF50">
+    
+    <!-- Подключение манифеста (ОБЯЗАТЕЛЬНО!) -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Иконки для разных устройств -->
+    <link rel="icon" href="images/icons/images.png" sizes="550x550">
+    <link rel="apple-touch-icon" href="images/icons/images.png">
+    
+    <title>Tails & Trails</title>
+</head>
+<body>
+    <!-- Твой контент -->
+    
+    <!-- Регистрация Service Worker (ОБЯЗАТЕЛЬНО!) -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('Service Worker зарегистрирован');
+                    })
+                    .catch(err => {
+                        console.log('Ошибка регистрации Service Worker:', err);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

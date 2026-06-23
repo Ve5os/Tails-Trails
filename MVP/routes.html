@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tails & Trails — Маршруты</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <main class="page">
+        <header class="app-header">
+            <div class="logo">
+                <i class="fas fa-paw"></i>
+                <span>Tails & Trails</span>
+            </div>
+            <span class="header-badge"><i class="fas fa-route"></i> Маршруты</span>
+        </header>
+
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-route icon-accent"></i>
+                Все прогулки
+            </h2>
+            <button class="btn btn-green" id="add-demo-route">
+                <i class="fas fa-plus"></i> Добавить
+            </button>
+        </div>
+
+        <p class="section-subtitle">
+            <i class="fas fa-info-circle"></i> Нажми на маршрут, чтобы увидеть детали и присоединиться
+        </p>
+
+        <div id="all-routes-list" class="all-routes-list"></div>
+    </main>
+
+    <div class="popup-overlay" id="routePopup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <div>
+                    <h3 class="popup-title" id="popup-title">Название маршрута</h3>
+                    <p class="popup-subtitle" id="popup-subtitle">📍 4.2 км · Активен</p>
+                </div>
+                <button class="popup-close" id="popupClose" aria-label="Закрыть"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="popup-details">
+                <span><i class="fas fa-route"></i> <span id="popup-distance">4.2</span> км</span>
+                <span><i class="fas fa-users"></i> <span id="popup-walkers">0</span> человек гуляют</span>
+                <span><i class="fas fa-star icon-fav"></i> <span id="popup-fav-status">⭐ В избранном</span></span>
+            </div>
+            <div class="popup-walkers-section">
+                <div class="popup-walkers-header">
+                    <span><i class="fas fa-users"></i> Кто гуляет сейчас:</span>
+                    <button class="btn btn--success btn--sm" id="popup-toggle-fav">
+                        <i class="fas fa-star"></i> В избранное
+                    </button>
+                </div>
+                <div id="popup-walkers-list"></div>
+                <div id="popup-no-walkers" class="empty-state empty-state--small">
+                    <i class="fas fa-dog empty-icon empty-icon--small"></i>
+                    <p>Пока никто не гуляет. Будь первым!</p>
+                </div>
+            </div>
+            <button class="btn btn--primary btn--full" id="popup-join-btn">
+                <i class="fas fa-walking"></i> Присоединиться к прогулке
+            </button>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item"><i class="fas fa-star"></i><span>Избранное</span></a>
+        <a href="map.html" class="nav-item"><i class="fas fa-map"></i><span>Карта</span></a>
+        <a href="routes.html" class="nav-item active"><i class="fas fa-list-ul"></i><span>Маршруты</span></a>
+        <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>Профиль</span></a>
+    </nav>
+
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=ваш-ключ-яндекс-карт"></script>
+    <script src="app.js"></script>
+    <script>
+        (function() {
+            function init() {
+                if (!window.TrailsTails) return false;
+                window.TrailsTails.renderAllRoutes();
+                window.TrailsTails.updateStats();
+                return true;
+            }
+            if (!init()) {
+                const check = setInterval(() => { if (init()) clearInterval(check); }, 100);
+            }
+        })();
+    </script>
+</body>
+</html>

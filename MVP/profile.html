@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tails & Trails — Профиль</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <main class="page" id="profile-content">
+        <header class="app-header">
+            <div class="logo">
+                <i class="fas fa-paw"></i>
+                <span>Tails & Trails</span>
+            </div>
+            <span class="header-badge"><i class="fas fa-user"></i> Профиль</span>
+        </header>
+
+        <div class="profile-info">
+            <div class="profile-avatar-wrapper">
+                <div class="profile-avatar" id="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <button class="avatar-edit-btn" id="avatar-edit-btn" title="Изменить аватар">
+                    <i class="fas fa-camera"></i>
+                </button>
+                <input type="file" id="avatar-input" accept="image/*" class="hidden-input">
+            </div>
+            <div class="profile-details">
+                <div class="profile-name-row">
+                    <h2 class="section-title" id="profile-name">Без имени</h2>
+                    <i class="fas fa-pen edit-icon" id="edit-name-btn" title="Редактировать имя"></i>
+                </div>
+                <div class="profile-location-row">
+                    <p id="profile-location"><i class="fas fa-map-pin location-pin"></i> Не указано</p>
+                    <i class="fas fa-pen edit-icon" id="edit-location-btn" title="Редактировать геолокацию"></i>
+                </div>
+                <div class="profile-stats-row">
+                    <span class="profile-stat"><i class="fas fa-dog"></i> <span id="pet-count">0</span> питомцев</span>
+                </div>
+            </div>
+        </div>
+
+        <section class="pets-section">
+            <div class="section-header">
+                <h3 class="pets-title"><i class="fas fa-dog icon-accent"></i> Мои питомцы</h3>
+                <button class="btn btn-brown" id="add-pet-btn"><i class="fas fa-plus"></i> Добавить</button>
+            </div>
+            <div id="pets-list" class="pets-list"></div>
+        </section>
+
+        <section class="stats-section">
+            <h4 class="stats-title">Моя статистика</h4>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-value stat-value--green" id="stat-routes">0</span>
+                    <span class="stat-label">маршрутов</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value stat-value--brown" id="stat-fav">0</span>
+                    <span class="stat-label">в избранном</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value stat-value--default" id="stat-walks">0</span>
+                    <span class="stat-label">прогулок</span>
+                </div>
+            </div>
+        </section>
+
+        <div class="profile-actions">
+            <button class="btn btn-green"><i class="fas fa-share-alt"></i> Пригласить друзей</button>
+            <button class="btn btn-danger-dark" id="reset-data-btn"><i class="fas fa-trash-alt"></i> Сбросить</button>
+        </div>
+        <p class="app-version">Trails & Tails v2.0 — гуляем вместе!</p>
+    </main>
+
+    <!-- Модалка: Имя -->
+    <div class="modal-overlay" id="editNameModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <p class="modal-title">Редактировать имя</p>
+                <button class="modal-close-btn" id="closeNameModal" aria-label="close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Ваше имя</label>
+                    <input class="input-field" type="text" id="edit-name-input" placeholder="Введите имя">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn--light" id="cancel-name-btn">Отмена</button>
+                <button class="btn btn-green" id="save-name-btn">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модалка: Локация -->
+    <div class="modal-overlay" id="editLocationModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <p class="modal-title">Редактировать геолокацию</p>
+                <button class="modal-close-btn" id="closeLocationModal" aria-label="close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Город / Местоположение</label>
+                    <input class="input-field" type="text" id="edit-location-input" placeholder="Например, Москва">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn--light" id="cancel-location-btn">Отмена</button>
+                <button class="btn btn-green" id="save-location-btn">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модалка: Питомец -->
+    <div class="modal-overlay" id="petModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <p class="modal-title" id="pet-modal-title">Добавить питомца</p>
+                <button class="modal-close-btn" id="closePetModal" aria-label="close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="pet-edit-index" value="-1">
+                <div class="form-group">
+                    <label class="form-label">Кличка</label>
+                    <input class="input-field" type="text" id="pet-name-input" placeholder="Кличка питомца">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Порода</label>
+                    <input class="input-field" type="text" id="pet-breed-input" placeholder="Порода (необязательно)">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn--light" id="cancel-pet-btn">Отмена</button>
+                <button class="btn btn-green" id="save-pet-btn">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item"><i class="fas fa-star"></i><span>Избранное</span></a>
+        <a href="map.html" class="nav-item"><i class="fas fa-map"></i><span>Карта</span></a>
+        <a href="routes.html" class="nav-item"><i class="fas fa-list-ul"></i><span>Маршруты</span></a>
+        <a href="profile.html" class="nav-item active"><i class="fas fa-user"></i><span>Профиль</span></a>
+    </nav>
+
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=ваш-ключ-яндекс-карт"></script>
+    <script src="app.js"></script>
+    <script>
+        (function() {
+            "use strict";
+
+            window.renderProfile = function() {
+                const user = window.TrailsTails?.userData();
+                if (!user) return;
+
+                const avatarEl = document.getElementById('profile-avatar');
+                avatarEl.innerHTML = user.avatar 
+                    ? `<img src="${user.avatar}" class="avatar-img" alt="Аватар">` 
+                    : '<i class="fas fa-user"></i>';
+
+                document.getElementById('profile-name').textContent = user.name || 'Без имени';
+                document.getElementById('profile-location').innerHTML = 
+                    `<i class="fas fa-map-pin location-pin"></i> ${user.location || 'Не указано'}`;
+                document.getElementById('pet-count').textContent = (user.pets || []).length;
+
+                renderPetsList(user.pets || []);
+            };
+
+            function renderPetsList(pets) {
+                const container = document.getElementById('pets-list');
+                container.innerHTML = pets.length === 0 
+                    ? '<p class="text-muted">Пока нет питомцев. Добавьте!</p>' 
+                    : '';
+
+                pets.forEach((pet, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'pet-item';
+                    div.innerHTML = `
+                        <div class="pet-info">
+                            <span class="pet-name">${pet.name || 'Без имени'}</span>
+                            <span class="pet-breed">${pet.breed || 'Неизвестная порода'}</span>
+                        </div>
+                        <div class="pet-actions">
+                            <button class="pet-action-btn edit-pet-btn" data-index="${index}" title="Редактировать"><i class="fas fa-pen"></i></button>
+                            <button class="pet-action-btn delete-pet-btn" data-index="${index}" title="Удалить"><i class="fas fa-trash"></i></button>
+                        </div>`;
+                    container.appendChild(div);
+                });
+
+                container.onclick = function(e) {
+                    const btn = e.target.closest('button');
+                    if (!btn) return;
+                    const index = parseInt(btn.dataset.index, 10);
+                    if (isNaN(index)) return;
+                    if (btn.classList.contains('edit-pet-btn')) openPetModal(index);
+                    else if (btn.classList.contains('delete-pet-btn')) {
+                        if (confirm('Удалить питомца?')) {
+                            window.TrailsTails.removePet(index) ? renderProfile() : alert('Не удалось удалить питомца');
+                        }
+                    }
+                };
+            }
+
+            function openModal(id) { document.getElementById(id).classList.add('is-active'); }
+            function closeModal(id) { document.getElementById(id).classList.remove('is-active'); }
+
+            document.getElementById('edit-name-btn').onclick = () => {
+                document.getElementById('edit-name-input').value = window.TrailsTails.userData().name || '';
+                openModal('editNameModal');
+            };
+            document.getElementById('closeNameModal').onclick = () => closeModal('editNameModal');
+            document.getElementById('cancel-name-btn').onclick = () => closeModal('editNameModal');
+            document.getElementById('save-name-btn').onclick = () => {
+                const name = document.getElementById('edit-name-input').value.trim();
+                if (!name) return alert('Имя не может быть пустым');
+                window.TrailsTails.updateUserProfile({ name });
+                renderProfile();
+                closeModal('editNameModal');
+            };
+
+            document.getElementById('edit-location-btn').onclick = () => {
+                document.getElementById('edit-location-input').value = window.TrailsTails.userData().location || '';
+                openModal('editLocationModal');
+            };
+            document.getElementById('closeLocationModal').onclick = () => closeModal('editLocationModal');
+            document.getElementById('cancel-location-btn').onclick = () => closeModal('editLocationModal');
+            document.getElementById('save-location-btn').onclick = () => {
+                const loc = document.getElementById('edit-location-input').value.trim();
+                if (!loc) return alert('Геолокация не может быть пустой');
+                window.TrailsTails.updateUserProfile({ location: loc });
+                renderProfile();
+                closeModal('editLocationModal');
+            };
+
+            function openPetModal(index = -1) {
+                const user = window.TrailsTails.userData();
+                document.getElementById('pet-modal-title').textContent = index >= 0 ? 'Редактировать питомца' : 'Добавить питомца';
+                document.getElementById('pet-edit-index').value = index;
+                document.getElementById('pet-name-input').value = (index >= 0 && user.pets?.[index]?.name) || '';
+                document.getElementById('pet-breed-input').value = (index >= 0 && user.pets?.[index]?.breed) || '';
+                openModal('petModal');
+            }
+            document.getElementById('add-pet-btn').onclick = () => openPetModal();
+            document.getElementById('closePetModal').onclick = () => closeModal('petModal');
+            document.getElementById('cancel-pet-btn').onclick = () => closeModal('petModal');
+            document.getElementById('save-pet-btn').onclick = () => {
+                const name = document.getElementById('pet-name-input').value.trim();
+                const breed = document.getElementById('pet-breed-input').value.trim();
+                const index = parseInt(document.getElementById('pet-edit-index').value, 10);
+                if (!name) return alert('Введите кличку питомца');
+                const ok = index >= 0 ? window.TrailsTails.editPet(index, name, breed) : window.TrailsTails.addPet(name, breed);
+                ok ? (renderProfile(), closeModal('petModal')) : alert('Не удалось сохранить питомца');
+            };
+
+            document.getElementById('avatar-edit-btn').onclick = () => document.getElementById('avatar-input').click();
+            document.getElementById('avatar-input').onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = ev => { window.TrailsTails.updateUserProfile({ avatar: ev.target.result }); renderProfile(); };
+                reader.readAsDataURL(file);
+                this.value = '';
+            };
+
+            document.getElementById('reset-data-btn').onclick = () => {
+                if (confirm('Сбросить все данные?')) { window.TrailsTails.resetData(); renderProfile(); }
+            };
+
+            function updateStats() {
+                const routes = window.TrailsTails?.routesData() || [];
+                const favs = window.TrailsTails?.getFavorites() || [];
+                const walkers = window.TrailsTails?.getTotalWalkers() || 0;
+                document.getElementById('stat-routes').textContent = routes.length;
+                document.getElementById('stat-fav').textContent = favs.length;
+                document.getElementById('stat-walks').textContent = walkers;
+            }
+
+            function init() {
+                if (!window.TrailsTails) return false;
+                const orig = window.TrailsTails.renderAll;
+                window.TrailsTails.renderAll = function() { if (orig) orig(); updateStats(); };
+                renderProfile();
+                updateStats();
+                return true;
+            }
+            if (!init()) { const c = setInterval(() => { if (init()) clearInterval(c); }, 100); }
+        })();
+    </script>
+</body>
+</html>

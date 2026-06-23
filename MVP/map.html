@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tails & Trails — Карта</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <main class="page">
+        <header class="app-header">
+            <div class="logo">
+                <i class="fas fa-paw"></i>
+                <span>Tails & Trails</span>
+            </div>
+            <span class="header-badge"><i class="fas fa-map"></i> Карта</span>
+        </header>
+
+        <h2 class="section-title">
+            <i class="fas fa-map-marked-alt icon-accent"></i>
+            Где гуляют сегодня?
+        </h2>
+
+        <div class="search-box">
+            <div class="search-row">
+                <input class="search-input" type="text" id="map-search-input" placeholder="Найти маршрут по названию...">
+                <button class="search-btn" id="map-search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="map"></div>
+
+        <div class="map-legend">
+            <span><i class="fas fa-circle legend-dot legend-dot--active"></i> Активные маршруты</span>
+            <span><i class="fas fa-circle legend-dot legend-dot--favorite"></i> Избранные</span>
+            <span><i class="fas fa-users legend-stat"></i> <span id="total-walkers-map">0</span> собачников гуляют</span>
+        </div>
+    </main>
+
+    <div class="popup-overlay" id="routePopup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <div>
+                    <h3 class="popup-title" id="popup-title">Название маршрута</h3>
+                    <p class="popup-subtitle" id="popup-subtitle">📍 4.2 км · Активен</p>
+                </div>
+                <button class="popup-close" id="popupClose" aria-label="Закрыть"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="popup-details">
+                <span><i class="fas fa-route"></i> <span id="popup-distance">4.2</span> км</span>
+                <span><i class="fas fa-users"></i> <span id="popup-walkers">0</span> человек гуляют</span>
+                <span><i class="fas fa-star icon-fav"></i> <span id="popup-fav-status">⭐ В избранном</span></span>
+            </div>
+            <div class="popup-walkers-section">
+                <div class="popup-walkers-header">
+                    <span><i class="fas fa-users"></i> Кто гуляет сейчас:</span>
+                    <button class="btn btn--success btn--sm" id="popup-toggle-fav">
+                        <i class="fas fa-star"></i> В избранное
+                    </button>
+                </div>
+                <div id="popup-walkers-list"></div>
+                <div id="popup-no-walkers" class="empty-state empty-state--small">
+                    <i class="fas fa-dog empty-icon empty-icon--small"></i>
+                    <p>Пока никто не гуляет. Будь первым!</p>
+                </div>
+            </div>
+            <button class="btn btn--primary btn--full" id="popup-join-btn">
+                <i class="fas fa-walking"></i> Присоединиться к прогулке
+            </button>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item"><i class="fas fa-star"></i><span>Избранное</span></a>
+        <a href="map.html" class="nav-item active"><i class="fas fa-map"></i><span>Карта</span></a>
+        <a href="routes.html" class="nav-item"><i class="fas fa-list-ul"></i><span>Маршруты</span></a>
+        <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>Профиль</span></a>
+    </nav>
+
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=ваш-ключ-яндекс-карт"></script>
+    <script src="app.js"></script>
+    <script>
+        (function() {
+            "use strict";
+            let mapInstance = null;
+            let placemarks = [];
+
+            function initMap() {
+                if (!window.ymaps) return;
+                if (mapInstance) { mapInstance.destroy(); mapInstance = null; placemarks = []; }
+                ymaps.ready(() => {
+                    mapInstance = new ymaps.Map('map', {
+                        center: [55.76, 37.64], zoom: 11,
+                        controls: ['zoomControl', 'typeSelector']
+                    });
+                    mapInstance.options.set('suppressMapOpenBlock', true);
+                    updateMapMarkers();
+                    document.getElementById('map-search-btn').addEventListener('click', searchOnMap);
+                    document.getElementById('map-search-input').addEventListener('keyup', e => {
+                        if (e.key === 'Enter') searchOnMap();
+                    });
+                });
+            }
+
+            function updateMapMarkers() {
+                if (!mapInstance || !window.ymaps) return;
+                placemarks.forEach(pm => mapInstance.geoObjects.remove(pm));
+                placemarks = [];
+                const routes = window.TrailsTails?.routesData() || [];
+                const activeRoutes = routes.filter(r => r.active);
+                const isUserWalking = window.TrailsTails?.isUserWalking || (() => false);
+                activeRoutes.forEach(route => {
+                    if (!route.coords) return;
+                    const pm = new ymaps.Placemark(route.coords, {
+                        balloonContent: `<strong>${route.name}</strong><br>${route.distance} км<br>👥 ${route.walkers || 0} чел.${isUserWalking(route.id) ? '<br>✅ Вы гуляете!' : ''}`,
+                        hintContent: route.name + (route.favorite ? ' ⭐' : '') + (isUserWalking(route.id) ? ' 🚶' : '')
+                    }, { preset: route.favorite ? 'islands#redDotIcon' : 'islands#blueDotIcon' });
+                    pm.events.add('click', () => window.TrailsTails?.openPopup(route.id));
+                    mapInstance.geoObjects.add(pm);
+                    placemarks.push(pm);
+                });
+            }
+
+            function searchOnMap() {
+                const query = document.getElementById('map-search-input').value.trim().toLowerCase();
+                if (!mapInstance || !window.ymaps || !query) { mapInstance?.setCenter([55.76, 37.64], 11); return; }
+                const found = (window.TrailsTails?.routesData() || []).find(r => r.name.toLowerCase().includes(query) && r.active);
+                if (found?.coords) {
+                    mapInstance.setCenter(found.coords, 14);
+                    const pm = new ymaps.Placemark(found.coords, {
+                        balloonContent: `<strong>${found.name}</strong><br>👥 ${found.walkers || 0} чел.`
+                    }, { preset: 'islands#redDotIcon' });
+                    mapInstance.geoObjects.add(pm);
+                    setTimeout(() => mapInstance.geoObjects.remove(pm), 3500);
+                } else { alert('Маршрут не найден или сейчас неактивен'); }
+            }
+
+            window.TrailsTailsMap = { initMap, updateMapMarkers, searchOnMap };
+
+            function waitForYmaps(cb) {
+                if (window.ymaps) ymaps.ready(cb);
+                else { const c = setInterval(() => { if (window.ymaps) { clearInterval(c); ymaps.ready(cb); } }, 500); }
+            }
+
+            if (window.TrailsTails) { setTimeout(() => waitForYmaps(initMap), 100); }
+
+            if (window.TrailsTails) {
+                const orig = window.TrailsTails.renderAll;
+                window.TrailsTails.renderAll = function() { if (orig) orig(); window.TrailsTailsMap?.updateMapMarkers(); };
+            }
+        })();
+    </script>
+</body>
+</html>
