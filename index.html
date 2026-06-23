@@ -23,21 +23,5 @@
 <body>
     <!-- Твой контент -->
     Тест
-    <!-- Регистрация Service Worker (ОБЯЗАТЕЛЬНО!) -->
-    <script>
-        if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/Tails-Trails/sw.js', {
-            scope: '/Tails-Trails/'  // ← Указываем scope для папки проекта
-        })
-        .then(registration => {
-            console.log('Service Worker зарегистрирован для scope:', registration.scope);
-        })
-        .catch(err => {
-            console.log('Ошибка регистрации Service Worker:', err);
-        });
-    });
-}
-    </script>
 </body>
 </html>
