@@ -2,7 +2,7 @@
   "name": "Tails & Trails",
   "short_name": "T&T",
   "description": "Находи компаньонов для прогулок с питомцами",
-  "start_url": "/index.html",
+  "start_url": "Tails-Trails/index.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#ffffff",
