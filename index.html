@@ -1,116 +1,690 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
-    <!-- Стандартные мета-теги для PWA -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Tails & Trails">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#4CAF50">
-    
-    <!-- Подключение манифеста (ОБЯЗАТЕЛЬНО!) -->
-    <link rel="manifest" href="manifest.json">
-    
-    <!-- Иконки для разных устройств -->
-    <link rel="icon" href="images/icons/paw3.png" sizes="550x550">
-
-    <!-- Линки -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="apple-touch-icon" href="images/icons/paws3.png">
-
-    <link rel="stylesheet" href="MVP/styles.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Tails & Trails" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#4CAF50" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="images/icons/paw3.png" sizes="550x550" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="apple-touch-icon" href="images/icons/paws3.png" />
     <title>Tails & Trails</title>
+    <style>
+        /* ============================================
+           TRAILS & TAILS — Core Styles
+           v3.0 — Pure CSS, No Frameworks
+           ============================================ */
+
+        /* ---------- CSS Variables ---------- */
+        :root {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #232323;
+            --bg-card: #2a2a2a;
+            --bg-card-hover: #333333;
+            --text-primary: #ece8e1;
+            --text-secondary: #b8b0a4;
+            --text-muted: #7a7468;
+
+            --brown: #8d6e4e;
+            --brown-light: #a8896b;
+            --brown-dark: #6d543b;
+            --green-dark: #2d4a3e;
+            --green-mid: #3d6b59;
+            --green-light: #5a8f78;
+            --green-bright: #7dbb96;
+
+            --border-color: #3a3a3a;
+            --shadow: 0 4px 20px rgba(0,0,0,0.6);
+            --shadow-popup: 0 8px 40px rgba(0,0,0,0.9);
+            --radius-sm: 16px;
+            --radius-md: 20px;
+            --radius-lg: 24px;
+            --radius-xl: 28px;
+            --radius-pill: 40px;
+        }
+
+        /* ---------- Reset & Base ---------- */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
+            padding-bottom: 100px; /* увеличиваем отступ, чтобы контент не наезжал */
+            min-height: 100vh;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--green-dark); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--green-mid); }
+
+        /* ---------- Layout: Page ---------- */
+        .page {
+            padding: 20px 16px 30px;
+            animation: fadeSlide 0.25s ease;
+        }
+
+        @keyframes fadeSlide {
+            from { opacity: 0.3; transform: translateY(10px); }
+            to   { opacity: 1;   transform: translateY(0); }
+        }
+
+        /* ---------- Header ---------- */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 4px 16px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .logo i { color: var(--brown-light); font-size: 1.6rem; }
+
+        .logo span {
+            background: linear-gradient(135deg, var(--brown-light), var(--green-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-badge {
+            background: var(--green-dark);
+            color: var(--green-light);
+            padding: 4px 14px;
+            border-radius: var(--radius-pill);
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* ---------- Section Header ---------- */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-weight: 600;
+            font-size: 1.25rem;
+            margin: 0;
+        }
+
+        .icon-accent { color: var(--brown-light); margin-right: 8px; }
+
+        /* ---------- Route Cards ---------- */
+        .route-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: 16px 18px;
+            margin-bottom: 14px;
+            border: 2px solid var(--border-color);
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            position: relative;
+            transition: background 0.25s, transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+        }
+
+        .route-card:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+        }
+
+        .route-card.walking {
+            border-color: var(--green-bright);
+            box-shadow: 0 0 30px rgba(125, 187, 150, 0.15);
+        }
+
+        .route-card.walking:hover {
+            border-color: var(--green-light);
+            box-shadow: 0 0 40px rgba(125, 187, 150, 0.25);
+        }
+
+        .route-card .route-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            pointer-events: none;
+        }
+
+        .route-card .route-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            flex-wrap: wrap;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .route-card .route-meta i { color: var(--brown-light); width: 18px; }
+
+        .route-status {
+            display: inline-block;
+            padding: 3px 14px;
+            border-radius: 100px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            background: var(--green-dark);
+            color: var(--green-light);
+        }
+
+        .route-status.inactive { background: #3d2a2a; color: #c97a7a; }
+
+        .route-status.live {
+            background: #4a3d2a;
+            color: #e8c87a;
+            animation: pulse-live 1.8s infinite;
+        }
+
+        @keyframes pulse-live {
+            0%, 100% { opacity: 1; }
+            50%      { opacity: 0.5; }
+        }
+
+        .walking-badge {
+            display: none;
+            background: var(--green-dark);
+            color: var(--green-bright);
+            padding: 2px 12px;
+            border-radius: var(--radius-pill);
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 8px;
+            pointer-events: none;
+        }
+
+        .route-card.walking .walking-badge {
+            display: inline-block;
+            animation: pulse-badge 2s infinite;
+        }
+
+        @keyframes pulse-badge {
+            0%, 100% { opacity: 1; }
+            50%      { opacity: 0.6; }
+        }
+
+        .card-actions {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            display: flex;
+            gap: 8px;
+            pointer-events: none;
+        }
+
+        .card-actions button {
+            pointer-events: auto;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s, color 0.2s, border-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .card-actions button:hover { transform: scale(1.1); }
+
+        .card-actions .fav-btn.active {
+            color: #e8c87a;
+            border-color: #e8c87a;
+        }
+
+        .card-actions .fav-btn.active:hover { background: #4a3d2a; }
+
+        .card-actions .fav-btn:hover {
+            background: var(--green-dark);
+            color: var(--green-light);
+            border-color: var(--green-mid);
+        }
+
+        .card-actions .info-btn { display: none; }
+        .card-actions .info-btn:hover {
+            background: var(--brown-dark);
+            color: var(--brown-light);
+            border-color: var(--brown);
+        }
+
+        .favorites-list .card-actions .info-btn { display: flex; }
+
+        /* ---------- Empty State ---------- */
+        .empty-state {
+            text-align: center;
+            padding: 50px 0;
+            color: var(--text-muted);
+        }
+
+        .empty-state--small { padding: 20px; }
+
+        .empty-icon {
+            font-size: 36px;
+            opacity: 0.2;
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .empty-icon--small { font-size: 28px; margin-bottom: 8px; }
+
+        /* ---------- Popup ---------- */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .popup-overlay.active { display: flex; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        .popup-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            max-width: 520px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 28px 24px 24px;
+            box-shadow: var(--shadow-popup);
+            animation: slideUp 0.25s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to   { transform: translateY(0); opacity: 1; }
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .popup-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .popup-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .popup-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.6rem;
+            cursor: pointer;
+            padding: 0 6px;
+            transition: color 0.15s, transform 0.15s;
+        }
+
+        .popup-close:hover {
+            color: var(--text-primary);
+            transform: rotate(90deg);
+        }
+
+        .popup-details {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+        }
+
+        .popup-details i { color: var(--brown-light); width: 20px; }
+
+        .popup-walkers-section { margin: 16px 0 12px; }
+
+        .popup-walkers-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .popup-walker {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            margin-top: 10px;
+            margin-bottom: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .walker-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--green-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--green-light);
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .walker-info { flex: 1; }
+
+        .walker-name { font-weight: 600; font-size: 0.95rem; }
+
+        .walker-pets {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .walker-pets i { color: var(--brown-light); }
+
+        /* ---------- Buttons ---------- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            border-radius: var(--radius-pill);
+            padding: 10px 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: 1px solid;
+            transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s;
+            text-decoration: none;
+            font-family: inherit;
+        }
+
+        .btn:active { transform: scale(0.97); }
+
+        .btn--primary {
+            background: var(--green-dark);
+            border-color: var(--green-mid);
+            color: var(--green-light);
+        }
+        .btn--primary:hover { background: var(--green-mid); color: white; }
+
+        .btn--success {
+            background: var(--green-dark);
+            border-color: var(--green-bright);
+            color: var(--green-bright);
+        }
+        .btn--success:hover { background: var(--green-mid); color: white; }
+
+        .btn--full { width: 100%; }
+        .btn--sm { padding: 6px 14px; font-size: 0.8rem; }
+
+        /* ---------- L E V I T A T I N G   N A V   (iOS 26 style) ---------- */
+        .bottom-nav-wrapper {
+            position: fixed;
+            bottom: 24px;           /* отступ от низа экрана */
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            pointer-events: none;    /* чтобы клики проходили сквозь wrapper */
+            z-index: 1000;
+            padding: 0 16px;
+        }
+
+        .bottom-nav {
+            pointer-events: auto;    /* включаем клики на самой навигации */
+            background: rgba(30, 30, 30, 0.82);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 40px;     /* большой скругленный прямоугольник */
+            padding: 6px 12px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(255, 255, 255, 0.03);
+            width: auto;
+            min-width: 280px;
+            max-width: 420px;
+            flex: 0 1 auto;
+            transition: box-shadow 0.3s, background 0.3s;
+        }
+
+        /* каждый пункт */
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 6px 14px;
+            border: none;
+            background: transparent;
+            gap: 2px;
+            border-radius: 30px;
+            transition: color 0.2s, background 0.2s, transform 0.15s;
+            text-decoration: none;
+            white-space: nowrap;
+            flex: 0 1 auto;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            transition: transform 0.2s, text-shadow 0.2s;
+        }
+
+        .nav-item span {
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+        }
+
+        .nav-item.active {
+            color: var(--green-light);
+            background: rgba(61, 107, 89, 0.2);
+        }
+
+        .nav-item.active i {
+            transform: scale(1.05);
+            text-shadow: 0 0 16px rgba(90, 143, 120, 0.25);
+        }
+
+        .nav-item:active { transform: scale(0.92); }
+        .nav-item:hover { color: var(--text-primary); }
+
+        /* Адаптив для маленьких экранов */
+        @media (max-width: 480px) {
+            .bottom-nav-wrapper { bottom: 16px; padding: 0 12px; }
+            .bottom-nav { min-width: 200px; padding: 4px 8px; border-radius: 32px; }
+            .nav-item { padding: 4px 10px; }
+            .nav-item i { font-size: 17px; }
+            .nav-item span { font-size: 8px; }
+            .page { padding: 16px 12px; }
+            .route-card { padding: 14px; }
+            .logo { font-size: 1.1rem; }
+            .popup-content { padding: 20px 16px; }
+            .card-actions button {
+                width: 32px;
+                height: 32px;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .bottom-nav { min-width: 160px; }
+            .nav-item { padding: 4px 6px; }
+            .nav-item i { font-size: 15px; }
+            .nav-item span { display: none; } /* скрываем текст, остаются только иконки */
+        }
+
+        /* Дополнительно: убираем старый фиксированный nav, если он был */
+        /* (мы его заменяем новым) */
+
+        /* остальные утилиты */
+        .text-muted { color: var(--text-muted); }
+        .text-center { text-align: center; }
+        .mt-4 { margin-top: 4px; }
+        .flex-center {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn--light {
+            background: var(--bg-card);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+        .btn--light:hover { background: var(--bg-card-hover); }
+    </style>
 </head>
 <body>
 
-    <main class="page">
-        <header class="app-header">
-            <div class="logo">
-                <i class="fas fa-paw"></i>
-                <span>Tails & Trails</span>
-            </div>
-            <span class="header-badge"><i class="fas fa-users"></i> 24 онлайн</span>
-        </header>
-
-        <div class="section-header">
-            <h2 class="section-title">
-                <i class="fas fa-star icon-accent"></i>
-                Избранные прогулки
-            </h2>
+<main class="page">
+    <header class="app-header">
+        <div class="logo">
+            <i class="fas fa-paw"></i>
+            <span>Tails & Trails</span>
         </div>
+        <span class="header-badge"><i class="fas fa-users"></i> 24 онлайн</span>
+    </header>
 
-        <div id="favorites-list" class="favorites-list"></div>
-
-        <div id="fav-empty" class="empty-state">
-            <i class="fas fa-heart empty-icon"></i>
-            <p>Нет избранных маршрутов :(</p>
-        </div>
-    </main>
-
-    <!-- Попап -->
-    <div class="popup-overlay" id="routePopup">
-        <div class="popup-content">
-            <div class="popup-header">
-                <div>
-                    <h3 class="popup-title" id="popup-title">Название маршрута</h3>
-                    <p class="popup-subtitle" id="popup-subtitle">📍 4.2 км · Активен</p>
-                </div>
-                <button class="popup-close" id="popupClose" aria-label="Закрыть">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-
-            <div class="popup-details">
-                <span><i class="fas fa-route"></i> <span id="popup-distance">4.2</span> км</span>
-                <span><i class="fas fa-users"></i> <span id="popup-walkers">0</span> человек гуляют</span>
-                <span><i class="fas fa-star icon-fav"></i> <span id="popup-fav-status">⭐ В избранном</span></span>
-            </div>
-
-            <div class="popup-walkers-section">
-                <div class="popup-walkers-header">
-                    <span><i class="fas fa-users"></i> Кто гуляет сейчас:</span>
-                    <button class="btn btn--success btn--sm" id="popup-toggle-fav">
-                        <i class="fas fa-star"></i> В избранное
-                    </button>
-                </div>
-                <div id="popup-walkers-list"></div>
-                <div id="popup-no-walkers" class="empty-state empty-state--small">
-                    <i class="fas fa-dog empty-icon empty-icon--small"></i>
-                    <p>Пока никто не гуляет. Будь первым!</p>
-                </div>
-            </div>
-
-            <button class="btn btn--primary btn--full" id="popup-join-btn">
-                <i class="fas fa-walking"></i> Присоединиться к прогулке
-            </button>
-        </div>
+    <div class="section-header">
+        <h2 class="section-title">
+            <i class="fas fa-star icon-accent"></i>
+            Избранные прогулки
+        </h2>
     </div>
 
-    <!-- Нижняя навигация -->
-    <nav class="bottom-nav">
-        <a href="index.html" class="nav-item active"><i class="fas fa-star"></i><span>Избранное</span></a>
-        <a href="map.html" class="nav-item"><i class="fas fa-map"></i><span>Карта</span></a>
-        <a href="routes.html" class="nav-item"><i class="fas fa-list-ul"></i><span>Маршруты</span></a>
-        <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>Профиль</span></a>
-    </nav>
+    <div id="favorites-list" class="favorites-list">
+    </div>
 
-    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=ваш-ключ-яндекс-карт"></script>
-    <script src="app.js"></script>
-    <script>
-        (function() {
-            function init() {
-                if (!window.TrailsTails) return false;
-                window.TrailsTails.renderFavorites();
-                window.TrailsTails.updateStats();
-                return true;
-            }
-            if (!init()) {
-                const check = setInterval(() => { if (init()) clearInterval(check); }, 100);
-            }
-        })();
-    </script>
+    <div id="fav-empty" class="empty-state">
+        <i class="fas fa-heart empty-icon"></i>
+        <p>Нет избранных маршрутов :(</p>
+    </div>
+</main>
+
+<!-- Попап -->
+<div class="popup-overlay" id="routePopup">
+    <div class="popup-content">
+        <div class="popup-header">
+            <div>
+                <h3 class="popup-title" id="popup-title">Название маршрута</h3>
+                <p class="popup-subtitle" id="popup-subtitle">📍 0.0 км · Активен</p>
+            </div>
+            <button class="popup-close" id="popupClose" aria-label="Закрыть">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="popup-details">
+            <span><i class="fas fa-route"></i> <span id="popup-distance">0.0</span> км</span>
+            <span><i class="fas fa-users"></i> <span id="popup-walkers">0</span> человек гуляют</span>
+        </div>
+
+        <div class="popup-walkers-section">
+            <div class="popup-walkers-header">
+                <span><i class="fas fa-users"></i> Кто гуляет сейчас:</span>
+                <button class="btn btn--success btn--sm" id="popup-toggle-fav">
+                    <i class="fas fa-star"></i> В избранное
+                </button>
+            </div>
+            <div id="popup-walkers-list">
+                <div class="popup-walker">
+                    <div class="walker-avatar">А</div>
+                    <div class="walker-info">
+                        <div class="walker-name">Анна</div>
+                        <div class="walker-pets"><i class="fas fa-dog"></i> Рекс, <i class="fas fa-cat"></i> Мурка</div>
+                    </div>
+                </div>
+            </div>
+            <div id="popup-no-walkers" class="empty-state empty-state--small" style="display:none;">
+                <i class="fas fa-dog empty-icon empty-icon--small"></i>
+                <p>Пока никто не гуляет. Будь первым!</p>
+            </div>
+        </div>
+
+        <button class="btn btn--primary btn--full" id="popup-join-btn">
+            <i class="fas fa-walking"></i> Присоединиться к прогулке
+        </button>
+    </div>
+</div>
+
+<!-- ========== НОВАЯ ЛЕВИТИРУЮЩАЯ НАВИГАЦИЯ (iOS 26) ========== -->
+<div class="bottom-nav-wrapper">
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item active">
+            <i class="fas fa-star"></i>
+            <span>Избранное</span>
+        </a>
+        <a href="map.html" class="nav-item">
+            <i class="fas fa-map"></i>
+            <span>Карта</span>
+        </a>
+        <a href="routes.html" class="nav-item">
+            <i class="fas fa-list-ul"></i>
+            <span>Маршруты</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>Профиль</span>
+        </a>
+    </nav>
+</div>
 </body>
 </html>
